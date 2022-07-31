@@ -2,7 +2,7 @@ import logo from '../images/logo.svg';
 import { Route, Link, BrowserRouter, Switch } from 'react-router-dom';
 
 
-function Header() {
+function Header(props) {
   return (
     <header className="header">
       <img className="header__logo" src={logo} alt="логотип" />
@@ -15,7 +15,16 @@ function Header() {
             <Link to="/sign-in" className="header__nav">
               Войти
             </Link>
-          </Route>
+      </Route>
+      
+      <Route exact path="/">
+        <div className='header__container'>
+          <p className='header__userinfo'>{props.userEmail}</p>
+          <Link to="/sign-in" className="header__nav header__nav_colorexit" onClick={props.onReoveToken}>
+          Выйти
+        </Link>
+      </div>
+      </Route>
         
     </header>
   );

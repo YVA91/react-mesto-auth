@@ -55,3 +55,9 @@
 @import url(../src/blocks/formregister/formregister.css);
 @import url(../src/blocks/formregister/__item/formregister__item.css);
 @import url(../src/blocks/formregister/__item/_link/formregister__item_link.css);
+@import url(../src/blocks/infotooltip/infotooltip.css);
+@import url(../src/blocks/infotooltip/__img/infotooltip__img.css);
+@import url(../src/blocks/infotooltip/__title/infotooltip__title.css);
+@import url(../src/blocks/header/__userinfo/header__userinfo.css);
+@import url(../src/blocks/header/__container/header__container.css);
+@import url(../src/blocks/header/__nav/_colorexit/header__nav_colorexit.css);

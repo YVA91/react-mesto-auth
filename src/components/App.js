@@ -10,6 +10,8 @@ import ImagePopup from './ImagePopup.js';
 import { api } from '../utils/Api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { Route, Switch, BrowserRouter, useHistory, withRouter } from 'react-router-dom';
+import ImgOk from '../images/infotoolOk.png'
+import ImgBad from '../images/infotoolBad.png'
 
 
 
@@ -31,10 +33,12 @@ function App() {
 
 
   const [loggedIn, setLoggedIn] = useState(false);
-  console.log(loggedIn)
   
+
+  const [isInfoToolTipPopupOpen, setIsInfoToolTipPopupOpen] = useState(false);
+  const [isStatusRegister, setIsStatusRegister] = useState(false)
   const history = useHistory(); 
- 
+  const [headerUresEmail, setHeaderUresEmail] = useState('');
   
 
   
@@ -56,6 +60,11 @@ function App() {
       })
   }, [])
 
+
+  useEffect (() => {
+    tokenCheck()
+  }, [])
+
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen (true)
   }
@@ -73,6 +82,7 @@ function App() {
     setIsEditProfilePopupOpen (false)
     setIsAddPlacePopupOpen (false)
     setIsEditAvatarPopupOpen (false)
+    setIsInfoToolTipPopupOpen(false)
     setSelectedCard({})
   }
 
@@ -136,25 +146,27 @@ function App() {
   function handleSubmitRegister (email, password) {
     Auth.register(email, password)
       .then((res) => {
-      console.log(res)
+        console.log(res)
       if (res) {
         setLoggedIn(true)
-        //history.push('/sign-in')
-        
+        history.push('/sign-in')
+        setIsInfoToolTipPopupOpen(true)
+        setIsStatusRegister(true)
       }
     })
     .catch((err) => {
+      setIsInfoToolTipPopupOpen(true)
+      setIsStatusRegister(false)
       console.log(err)
     })
 }
-
-  
 
 
 function handleSubmitAuthorize (email, password) {
   Auth.authorize(email, password)
     .then((data) => {
       if (data.token) {
+    localStorage.setItem('jwt', data.token);
     setLoggedIn(true)
     history.push("/")
     }
@@ -163,20 +175,36 @@ function handleSubmitAuthorize (email, password) {
     console.log(err)
   })
 }
+  
+  function tokenCheck() {
+    const token = localStorage.getItem('jwt')
+    if (token) {
+      Auth.getContent(token)
+        .then((data) => {
+          if (data) {
+            setLoggedIn(true)
+            setHeaderUresEmail(data.data.email)
+            history.push("/")
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+  }
 
-
-
-
-
-
-
+  function removeToken() {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false)
+  }
+  
 
 
 
   return (
     < CurrentUserContext.Provider value={currentUser} >
       
-      <Header/>
+      <Header userEmail={headerUresEmail} onReoveToken={removeToken} />
 
       <Switch>
 
@@ -240,7 +268,18 @@ function handleSubmitAuthorize (email, password) {
         card={selectedCard} />
       
 
-      <InfoTooltip/>
+      <InfoTooltip
+      name="infotooltip"
+      onClose = {closeAllPopups}
+      isOpen={isInfoToolTipPopupOpen}
+      isStatus={isStatusRegister}
+      textOk="Вы успешно зарегистрировались!"
+      textBad="Что-то пошло не так! Попробуйте ещё раз."
+      ImgOk={ImgOk}
+      ImgBad={ImgBad}
+      AltOk="Галочка"
+      AltBad="Крестик"
+      />
 
       <Footer/>
     </CurrentUserContext.Provider>
