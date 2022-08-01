@@ -61,3 +61,9 @@
 @import url(../src/blocks/header/__userinfo/header__userinfo.css);
 @import url(../src/blocks/header/__container/header__container.css);
 @import url(../src/blocks/header/__nav/_colorexit/header__nav_colorexit.css);
+@import url(../src/blocks/header/__burger/header__burger.css);
+@import url(../src/blocks/header/__burger/__line/header__burger__line.css);
+@import url(../src/blocks/header/__burger/__line/_open-info/header__burger__line_open-info.css);
+@import url(../src/blocks/header/__menu/header__menu.css);
+@import url(../src/blocks/header/__userinfo/_menu/header__userinfo_menu.css);
+@import url(../src/blocks/header/__menu/_inactive/header__menu_inactive.css);

@@ -12,16 +12,11 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { Route, Switch, BrowserRouter, useHistory, withRouter } from 'react-router-dom';
 import ImgOk from '../images/infotoolOk.png'
 import ImgBad from '../images/infotoolBad.png'
-
-
-
 import * as Auth from '../utils/Auth.js';
 import Login from './Login.js';
 import ProtectedRoute from './ProtectedRoute.js';
 import Register from './Register.js';
 import InfoTooltip from './InfoTooltip.js';
-
-
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -30,25 +25,12 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
-
-
   const [loggedIn, setLoggedIn] = useState(false);
-  
-
   const [isInfoToolTipPopupOpen, setIsInfoToolTipPopupOpen] = useState(false);
   const [isStatusRegister, setIsStatusRegister] = useState(false)
   const history = useHistory(); 
   const [headerUresEmail, setHeaderUresEmail] = useState('');
   
-
-  
-
-
-
-
-
-
-
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getCreateCard()])
       .then(([data, cards]) => {
@@ -59,7 +41,6 @@ function App() {
         console.log(err);
       })
   }, [])
-
 
   useEffect (() => {
     tokenCheck()
@@ -138,11 +119,8 @@ function App() {
     .catch((err) => {
       console.log(err)
     })
-}
+  }
 
-
-
-  
   function handleSubmitRegister (email, password) {
     Auth.register(email, password)
       .then((res) => {
@@ -159,22 +137,21 @@ function App() {
       setIsStatusRegister(false)
       console.log(err)
     })
-}
+  }
 
-
-function handleSubmitAuthorize (email, password) {
-  Auth.authorize(email, password)
-    .then((data) => {
-      if (data.token) {
-    localStorage.setItem('jwt', data.token);
-    setLoggedIn(true)
-    history.push("/")
-    }
-  })
-  .catch((err) => {
-    console.log(err)
-  })
-}
+  function handleSubmitAuthorize (email, password) {
+    Auth.authorize(email, password)
+      .then((data) => {
+        if (data.token) {
+      localStorage.setItem('jwt', data.token);
+      setLoggedIn(true)
+      history.push("/")
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
   
   function tokenCheck() {
     const token = localStorage.getItem('jwt')
@@ -198,16 +175,10 @@ function handleSubmitAuthorize (email, password) {
     setLoggedIn(false)
   }
   
-
-
-
   return (
-    < CurrentUserContext.Provider value={currentUser} >
-      
+    <CurrentUserContext.Provider value={currentUser} >
       <Header userEmail={headerUresEmail} onReoveToken={removeToken} />
-
       <Switch>
-
       <ProtectedRoute
         component={Main}
         onEditAvatar = {handleEditAvatarClick} 
@@ -219,25 +190,20 @@ function handleSubmitAuthorize (email, password) {
         cards={cards}
         loggedIn={loggedIn}
         exact path="/"/>
-      
         <Route path="/sign-in">
           <Login
             title="Вход"
             buttonText="Войти"
             onAuthorize={handleSubmitAuthorize}/>
-          </Route>
-          <Route path="/sign-up">
-            <Register
-              title="Регистрация"
-              buttonText="Зарегистрироваться"
-              onRegister={handleSubmitRegister} />
         </Route>
-
+        <Route path="/sign-up">
+          <Register
+            title="Регистрация"
+            buttonText="Зарегистрироваться"
+            onRegister={handleSubmitRegister} />
+        </Route>
       </Switch>
       
-      
-
-
       <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
@@ -266,8 +232,7 @@ function handleSubmitAuthorize (email, password) {
       <ImagePopup
         onClose = {closeAllPopups}
         card={selectedCard} />
-      
-
+  
       <InfoTooltip
       name="infotooltip"
       onClose = {closeAllPopups}
