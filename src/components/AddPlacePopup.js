@@ -2,26 +2,26 @@ import React from 'react';
 import PopupWithForm from './PopupWithForm.js';
 import { useForm } from '../hooks/useForm.js';
 
-function AddPlacePopup(props) {
+function AddPlacePopup({ onAddPlace, isOpen, onClose, isLoading }) {
   const { values, handleChange, setValues } = useForm({ });
 
   function handleSubmit(e) {
     e.preventDefault();
-    props.onAddPlace(values);
+    onAddPlace(values);
   }
 
   React.useEffect(() => {
     setValues({ name:'', link:''});
-  }, [props.isOpen]);
+  }, [isOpen]);
 
   return (
     <PopupWithForm
       nameForm="place"
       name = "new-photo"
-      isOpen = {props.isOpen}
-      onClose = {props.onClose}
+      isOpen = {isOpen}
+      onClose = {onClose}
       title = "Новое место"
-      buttonText={props.isLoading ? 'Сохранение...' : 'Сохранить'}
+      buttonText={isLoading ? 'Сохранение...' : 'Сохранить'}
       onSubmit={handleSubmit}>
     
       <fieldset className="popup__form-item">

@@ -49,15 +49,12 @@ function App() {
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true)
-    setIsLoading(false)
   }
   function handleEditProfileClick () {
     setIsEditProfilePopupOpen(true)
-    setIsLoading(false)
   }
   function handleAddPlaceClick () {
     setIsAddPlacePopupOpen(true)
-    setIsLoading(false)
   }
   function handleCardClick (card) {
     setSelectedCard (card)
@@ -92,6 +89,7 @@ function App() {
   }, [isOpen]) 
 
   function handleUpdateUser(data) {
+    setIsLoading(true)
     api.patchUserInfo(data.name, data.about)
     .then((res) => {
       setCurrentUser(res);
@@ -101,11 +99,12 @@ function App() {
       console.log(err)
     })
     .finally(() => {
-      setIsLoading(true)
+      setIsLoading(false)
     });
   }
 
   function handleUpdateAvatar(avatar) {
+    setIsLoading(true)
     api.patchUserAvatar(avatar)
       .then((res) => {
         setCurrentUser(res);
@@ -115,11 +114,12 @@ function App() {
         console.log(err)
       })
       .finally(() => {
-        setIsLoading(true)
+        setIsLoading(false)
       });
   }
 
   function handleAddPlaceSubmit(card) {
+    setIsLoading(true)
     api.postNewPhoto(card.name, card.link)
       .then((newCard) => {
         setCards([newCard, ...cards]);
@@ -129,7 +129,7 @@ function App() {
         console.log(err)
       })
       .finally(() => {
-        setIsLoading(true)
+        setIsLoading(false)
       });
   }
 

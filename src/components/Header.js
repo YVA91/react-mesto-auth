@@ -3,7 +3,7 @@ import { Route, Link, BrowserRouter, Switch } from 'react-router-dom';
 import {useState} from 'react';
 
 
-function Header(props) {
+function Header({ userEmail, onReoveToken}) {
   const [isOpenInfo, setIsOpenInfo] = useState(false);
   const openInfo = (`header__burger__line ${isOpenInfo ? 'header__burger__line_open-info' : ''}`);
   const menu = (`header__menu ${isOpenInfo ? '' : 'header__menu_inactive'}`);
@@ -19,8 +19,8 @@ function Header(props) {
     <>
     <Route exact path="/">
       <div className={menu}>
-        <p className='header__userinfo header__userinfo_menu'>{props.userEmail}</p>
-        <Link to="/sign-in" className="header__nav header__nav_colorexit" onClick={props.onReoveToken}>
+        <p className='header__userinfo header__userinfo_menu'>{userEmail}</p>
+        <Link to="/sign-in" className="header__nav header__nav_colorexit" onClick={onReoveToken}>
           Выйти
         </Link>
       </div>
@@ -48,8 +48,8 @@ function Header(props) {
             <span className={openInfo}></span>
           </div>
           <div className='header__container'>
-            <p className='header__userinfo'>{props.userEmail}</p>
-            <Link to="/sign-in" className="header__nav header__nav_colorexit" onClick={props.onReoveToken}>
+            <p className='header__userinfo'>{userEmail}</p>
+            <Link to="/sign-in" className="header__nav header__nav_colorexit" onClick={onReoveToken}>
               Выйти
             </Link>
           </div>

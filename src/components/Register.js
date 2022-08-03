@@ -2,12 +2,12 @@ import AuthForm from './AuthForm';
 import { Link } from 'react-router-dom';
 import { useForm } from '../hooks/useForm.js';
 
-function Register(props) {
+function Register({ onRegister, title, buttonText}) {
   const { values, handleChange} = useForm({});
 
   function handleSubmit(e) {
     e.preventDefault();
-    props.onRegister(values.email, values.password);
+    onRegister(values.email, values.password);
   }
 
 return (
@@ -15,8 +15,8 @@ return (
     <AuthForm
       nameEmail="email"
       namePassword="password"
-      title={props.title}
-      buttonText={props.buttonText}
+      title={title}
+      buttonText={buttonText}
       onSubmit={handleSubmit}
       onChange={handleChange}
       emailValue={values.email}

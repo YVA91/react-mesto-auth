@@ -3,17 +3,17 @@ import PopupWithForm from './PopupWithForm.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import { useForm } from '../hooks/useForm.js';
 
-function EditProfilePopup(props) {
+function EditProfilePopup({ isOpen, onUpdateUser, onClose, isLoading }) {
   const { values, handleChange, setValues } = useForm({});
   const currentUser = useContext(CurrentUserContext);
 
   useEffect(() => {
     setValues({ name: currentUser.name, about: currentUser.about })
-  }, [currentUser, props.isOpen]);
+  }, [currentUser, isOpen]);
   
   function handleSubmit(event) {
     event.preventDefault();
-    props.onUpdateUser({
+    onUpdateUser({
       name: values.name, 
       about: values.about,
     });
@@ -23,10 +23,10 @@ function EditProfilePopup(props) {
     <PopupWithForm
       nameForm="profile"
       name = "new-name"
-      isOpen = {props.isOpen}
-      onClose = {props.onClose}
+      isOpen = {isOpen}
+      onClose = {onClose}
       title = "Редактировать профиль"
-      buttonText={props.isLoading ? 'Сохранение...' : 'Сохранить'}
+      buttonText={isLoading ? 'Сохранение...' : 'Сохранить'}
       onSubmit = {handleSubmit}>
         
       <fieldset className="popup__form-item">
