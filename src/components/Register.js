@@ -1,34 +1,26 @@
-import { useState} from 'react';
 import AuthForm from './AuthForm';
 import { Link } from 'react-router-dom';
+import { useForm } from '../hooks/useForm.js';
 
 function Register(props) {
-  const [email, setEmail] = useState ('')
-  const [password, setPassword] = useState ('')
+  const { values, handleChange} = useForm({});
 
   function handleSubmit(e) {
     e.preventDefault();
-    props.onRegister(email, password);
-  } 
-
-  function handleChangeEmail(evt) {
-    setEmail(evt.target.value);
-  }
-
-  function handleChangePassword(evt) {
-    setPassword(evt.target.value);
+    props.onRegister(values.email, values.password);
   }
 
 return (
   <>
     <AuthForm
+      nameEmail="email"
+      namePassword="password"
       title={props.title}
       buttonText={props.buttonText}
       onSubmit={handleSubmit}
-      onChangeEmail={handleChangeEmail}
-      onChangePassword={handleChangePassword}
-      emailValue={email}
-      passwordValue={password}
+      onChange={handleChange}
+      emailValue={values.email}
+      passwordValue={values.password}
     />
     <div className='formregister'>
       <p className='formregister__item'>Уже зарегистрированы?&nbsp;

@@ -30,6 +30,7 @@ function App() {
   const [isStatusRegister, setIsStatusRegister] = useState(false)
   const history = useHistory(); 
   const [headerUresEmail, setHeaderUresEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getCreateCard()])
@@ -47,13 +48,16 @@ function App() {
   }, [])
 
   function handleEditAvatarClick() {
-    setIsEditAvatarPopupOpen (true)
+    setIsEditAvatarPopupOpen(true)
+    setIsLoading(false)
   }
   function handleEditProfileClick () {
-    setIsEditProfilePopupOpen (true)
+    setIsEditProfilePopupOpen(true)
+    setIsLoading(false)
   }
   function handleAddPlaceClick () {
-    setIsAddPlacePopupOpen (true)
+    setIsAddPlacePopupOpen(true)
+    setIsLoading(false)
   }
   function handleCardClick (card) {
     setSelectedCard (card)
@@ -67,6 +71,26 @@ function App() {
     setSelectedCard({})
   }
 
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard.link
+  useEffect(() => {
+    function closeByEscapeAndOverlay(evt) {
+      if (evt.key === 'Escape') {
+        closeAllPopups();
+      }
+      if (evt.target.classList.contains('popup')) {
+        closeAllPopups()
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('keydown', closeByEscapeAndOverlay);
+      document.addEventListener("mousedown", closeByEscapeAndOverlay);
+      return () => {
+        document.removeEventListener('keydown', closeByEscapeAndOverlay);
+        document.removeEventListener("mousedown", closeByEscapeAndOverlay);
+      }
+    }
+  }, [isOpen]) 
+
   function handleUpdateUser(data) {
     api.patchUserInfo(data.name, data.about)
     .then((res) => {
@@ -76,6 +100,9 @@ function App() {
     .catch((err) => {
       console.log(err)
     })
+    .finally(() => {
+      setIsLoading(true)
+    });
   }
 
   function handleUpdateAvatar(avatar) {
@@ -87,6 +114,23 @@ function App() {
       .catch((err) => {
         console.log(err)
       })
+      .finally(() => {
+        setIsLoading(true)
+      });
+  }
+
+  function handleAddPlaceSubmit(card) {
+    api.postNewPhoto(card.name, card.link)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        setIsLoading(true)
+      });
   }
 
   function handleCardLike(card) {
@@ -110,42 +154,33 @@ function App() {
       })
   }
 
-  function handleAddPlaceSubmit (card) {
-    api.postNewPhoto(card.name, card.link)
-    .then((newCard) => {
-      setCards([newCard, ...cards]);
-      closeAllPopups()
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-  }
-
-  function handleSubmitRegister (email, password) {
+  function handleSubmitRegister(email, password) {
     Auth.register(email, password)
       .then((res) => {
         console.log(res)
       if (res) {
         setLoggedIn(true)
         history.push('/sign-in')
-        setIsInfoToolTipPopupOpen(true)
         setIsStatusRegister(true)
       }
     })
     .catch((err) => {
-      setIsInfoToolTipPopupOpen(true)
       setIsStatusRegister(false)
       console.log(err)
     })
+    .finally(() => {
+      setIsInfoToolTipPopupOpen(true)
+    });
   }
 
   function handleSubmitAuthorize (email, password) {
     Auth.authorize(email, password)
       .then((data) => {
         if (data.token) {
-      localStorage.setItem('jwt', data.token);
-      setLoggedIn(true)
-      history.push("/")
+          localStorage.setItem('jwt', data.token);
+          setHeaderUresEmail(email)
+          setLoggedIn(true)
+          history.push("/")
       }
     })
     .catch((err) => {
@@ -207,27 +242,26 @@ function App() {
       <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
-        onUpdateUser={handleUpdateUser}> 
-      </EditProfilePopup> 
+        onUpdateUser={handleUpdateUser}
+        isLoading={isLoading}/> 
 
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
-        onUpdateAvatar={handleUpdateAvatar}>
-      </EditAvatarPopup> 
+        onUpdateAvatar={handleUpdateAvatar}
+        isLoading={isLoading}/>
 
       <AddPlacePopup
         isOpen = {isAddPlacePopupOpen}
         onClose = {closeAllPopups}
-        onAddPlace={handleAddPlaceSubmit}>
-      </AddPlacePopup>
+        onAddPlace={handleAddPlaceSubmit}
+        isLoading={isLoading}/>
 
       <PopupWithForm
         name = "confirm"
         onClose = {closeAllPopups}
         title = "Вы уверены?"
-        buttonText = "Да">
-      </PopupWithForm>
+        buttonText = "Да"/>
 
       <ImagePopup
         onClose = {closeAllPopups}

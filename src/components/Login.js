@@ -1,32 +1,24 @@
-import {useState} from 'react';
+import { useForm } from '../hooks/useForm.js'
 import AuthForm from './AuthForm';
 
 function Login(props) {
-  const [email, setEmail] = useState ('')
-  const [password, setPassword] = useState ('')
+  const { values, handleChange } = useForm({});
 
   function handleSubmit(e) {
     e.preventDefault();
-    props.onAuthorize(email, password);
+    props.onAuthorize(values.email, values.password);
   } 
-
-  function handleChangeEmail(evt) {
-      setEmail(evt.target.value);
-  }
-
-  function handleChangePassword(evt) {
-    setPassword(evt.target.value);
-  }
-
+  
 return (
   <AuthForm
+    nameEmail="email"
+    namePassword="password"
     title={props.title}
     buttonText={props.buttonText}
     onSubmit={handleSubmit}
-    onChangeEmail={handleChangeEmail}
-    onChangePassword={handleChangePassword}
-    emailValue={email}
-    passwordValue={password}/>
+    onChange={handleChange}
+    emailValue={values.email}
+    passwordValue={values.password}/>
 );
 }
 
